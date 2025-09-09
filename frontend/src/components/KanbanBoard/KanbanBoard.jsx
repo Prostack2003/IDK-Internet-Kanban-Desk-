@@ -10,20 +10,20 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 
-// Components
+
 import DroppableColumn from '../Column/DroppableColumn';
 import AddTaskModal from '../TaskModal/AddTaskModal';
 import EditTaskModal from '../TaskModal/EditTaskModal';
 import ViewTaskModal from '../TaskModal/ViewTaskModal';
 
-// Hooks
+
 import { useTasks } from '../../hooks/useTasks.js';
 import { useTaskModals } from '../../hooks/useTaskModals.js';
 import { useDnD } from '../../hooks/useDnD.js';
 import {closestCorners, DndContext} from "@dnd-kit/core";
 
 const KanbanBoard = () => {
-    // Business logic hooks
+
     const { tasks, loading, tasksLoading, addTask, updateTask, deleteTask, moveTask } = useTasks();
     const {
         newTask, editingTask, viewingTask, setNewTask, setEditingTask,
@@ -31,10 +31,10 @@ const KanbanBoard = () => {
         openAddModal, openEditModal, openViewModal, onAddClose, onEditClose, onViewClose
     } = useTaskModals();
 
-    // DnD hook
+
     const { activeId, sensors, handleDragStart, handleDragEnd } = useDnD(moveTask);
 
-    // Event handlers
+
     const handleAddTask = async (e) => {
         e.preventDefault();
         const success = await addTask(newTask);
@@ -62,14 +62,14 @@ const KanbanBoard = () => {
         openViewModal(task);
     };
 
-    // Derived data
+
     const columns = {
         todo: tasks.filter(task => task.status === 'todo'),
         inprogress: tasks.filter(task => task.status === 'inprogress'),
         done: tasks.filter(task => task.status === 'done')
     };
 
-    // Loading state
+
     if (tasksLoading) {
         return (
             <Container maxW="container.xl" py={8}>
@@ -80,7 +80,7 @@ const KanbanBoard = () => {
         );
     }
 
-    // Render
+
     return (
         <Container maxW="container.xl" py={8}>
             <VStack spacing={6} align="stretch">
@@ -106,14 +106,14 @@ const KanbanBoard = () => {
                                         status === 'inprogress' ? '🚀 В работе' : '✅ Выполнено'
                                 }
                                 tasks={columnTasks}
-                                onEdit={openEditModal} // Передаем функцию редактирования
-                                onClick={handleTaskClick} // Передаем функцию просмотра
+                                onEdit={openEditModal}
+                                onClick={handleTaskClick}
                             />
                         ))}
                     </Grid>
                 </DndContext>
 
-                {/* Modals */}
+                {}
                 <AddTaskModal
                     isOpen={isAddOpen}
                     onClose={onAddClose}

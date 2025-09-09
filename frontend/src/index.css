@@ -15,20 +15,20 @@ body {
   min-height: 100vh;
 }
 
-/* Глобальные стили для переносов текста */
+
 .text-wrap {
   word-break: break-word;
   overflow-wrap: break-word;
   hyphens: auto;
 }
 
-/* Для всех текстовых элементов добавляем автоматические переносы */
+
 .chakra-text, .chakra-heading, .chakra-input, .chakra-textarea {
   word-break: break-word;
   overflow-wrap: break-word;
 }
 
-/* Улучшенный скролл */
+
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #cbd5e0 #f7fafc;

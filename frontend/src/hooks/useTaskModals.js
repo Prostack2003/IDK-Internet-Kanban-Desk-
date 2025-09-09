@@ -48,21 +48,21 @@ export const useTaskModals = () => {
     };
 
     return {
-        // States
+
         newTask,
         editingTask,
         viewingTask,
 
-        // Setters
+
         setNewTask,
         setEditingTask,
 
-        // Modal states
+
         isAddOpen,
         isEditOpen,
         isViewOpen,
 
-        // Modal actions
+
         openAddModal,
         openEditModal,
         openViewModal,

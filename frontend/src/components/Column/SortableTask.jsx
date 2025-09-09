@@ -42,7 +42,7 @@ const SortableTask = ({ task, onEdit, onClick }) => {
         }
     };
 
-    // Обрезаем описание до 3 строк
+
     const shouldTruncate = task.description && task.description.length > 120;
     const truncatedDescription = shouldTruncate
         ? task.description.slice(0, 40) + '...'
@@ -72,7 +72,7 @@ const SortableTask = ({ task, onEdit, onClick }) => {
             <CardBody p={3}>
                 <HStack justify="space-between" align="start" spacing={2}>
                     <Box flex="1" minW={0}>
-                        {/* Заголовок */}
+                        {}
                         <Heading
                             size="sm"
                             mb={1}
@@ -83,7 +83,7 @@ const SortableTask = ({ task, onEdit, onClick }) => {
                             {task.title}
                         </Heading>
 
-                        {/* Описание (всегда обрезанное) */}
+                        {}
                         {truncatedDescription && (
                             <Text
                                 fontSize="xs"
@@ -97,13 +97,13 @@ const SortableTask = ({ task, onEdit, onClick }) => {
                             </Text>
                         )}
 
-                        {/* Дата создания */}
+                        {}
                         <Text fontSize="xs" color="gray.400">
                             {new Date(task.created_at).toLocaleDateString('ru-RU')}
                         </Text>
                     </Box>
 
-                    {/* Кнопка редактирования */}
+                    {}
                     <IconButton
                         icon={<EditIcon />}
                         size="sm"
