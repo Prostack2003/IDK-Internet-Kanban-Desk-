@@ -84,12 +84,6 @@ const KanbanBoard = () => {
     return (
         <Container maxW="container.xl" py={8}>
             <VStack spacing={6} align="stretch">
-                <HStack justify="center">
-                    <Button onClick={openAddModal} colorScheme="blue" leftIcon={<AddIcon />} size="lg">
-                        Добавить задачу
-                    </Button>
-                </HStack>
-
                 <DndContext
                     sensors={sensors}
                     collisionDetection={closestCorners}
@@ -113,7 +107,12 @@ const KanbanBoard = () => {
                     </Grid>
                 </DndContext>
 
-                {}
+                <HStack justify="center">
+                    <Button onClick={openAddModal} colorScheme="blue" leftIcon={<AddIcon />} size="lg">
+                        Добавить задачу
+                    </Button>
+                </HStack>
+
                 <AddTaskModal
                     isOpen={isAddOpen}
                     onClose={onAddClose}
