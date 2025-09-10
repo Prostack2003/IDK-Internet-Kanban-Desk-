@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import Login from './components/Authentication/Login/Login.jsx';
 import Register from './components/Authentication/Register/Register.jsx';
 import KanbanBoard from './components/KanbanBoard/KanbanBoard.jsx';
+import BoardsList from "./components/BoardsList/BoardsList.jsx";
 
 axios.defaults.baseURL = 'http://localhost:5000';
 
@@ -89,18 +90,11 @@ function App() {
 
                 <Box as="main" flex="1">
                     <Routes>
-                        <Route
-                            path="/login"
-                            element={!user ? <Login setUser={setUser} /> : <Navigate to="/" />}
-                        />
-                        <Route
-                            path="/register"
-                            element={!user ? <Register /> : <Navigate to="/" />}
-                        />
-                        <Route
-                            path="/"
-                            element={user ? <KanbanBoard /> : <Navigate to="/login" />}
-                        />
+                        <Route path="/login" element={!user ? <Login setUser={setUser} /> : <Navigate to="/boards" />} />
+                        <Route path="/register" element={!user ? <Register /> : <Navigate to="/boards" />} />
+                        <Route path="/boards" element={user ? <BoardsList /> : <Navigate to="/login" />} />
+                        <Route path="/board/:boardId" element={user ? <KanbanBoard /> : <Navigate to="/login" />} />
+                        <Route path="/" element={<Navigate to="/boards" />} />
                     </Routes>
                 </Box>
             </Box>

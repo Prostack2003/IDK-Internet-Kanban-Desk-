@@ -8,7 +8,8 @@ import {
     Container,
     HStack
 } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
+import {useNavigate, useParams} from 'react-router-dom';
+import {AddIcon, ArrowBackIcon} from '@chakra-ui/icons';
 
 
 import DroppableColumn from '../Column/DroppableColumn';
@@ -24,7 +25,9 @@ import {closestCorners, DndContext} from "@dnd-kit/core";
 
 const KanbanBoard = () => {
 
-    const { tasks, loading, tasksLoading, addTask, updateTask, deleteTask, moveTask } = useTasks();
+    const { boardId } = useParams();
+    const { tasks, loading, tasksLoading, addTask, updateTask, deleteTask, moveTask } = useTasks(boardId);
+
     const {
         newTask, editingTask, viewingTask, setNewTask, setEditingTask,
         isAddOpen, isEditOpen, isViewOpen,
@@ -34,6 +37,11 @@ const KanbanBoard = () => {
 
     const { activeId, sensors, handleDragStart, handleDragEnd } = useDnD(moveTask);
 
+    const navigate = useNavigate();
+
+    const handleBackToBoards = () => {
+        navigate('/boards');
+    };
 
     const handleAddTask = async (e) => {
         e.preventDefault();
@@ -108,6 +116,14 @@ const KanbanBoard = () => {
                 </DndContext>
 
                 <HStack justify="center">
+                    <Button
+                        onClick={handleBackToBoards}
+                        colorScheme="blue"
+                        size="lg"
+                        leftIcon={<ArrowBackIcon />}
+                    >
+                        Назад к доскам
+                    </Button>
                     <Button onClick={openAddModal} colorScheme="blue" leftIcon={<AddIcon />} size="lg">
                         Добавить задачу
                     </Button>

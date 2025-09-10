@@ -58,7 +58,7 @@ const SortableTask = ({ task, onEdit, onClick }) => {
             {...attributes}
             {...listeners}
             cursor="pointer"
-            transition="all 0.2s ease-in-out"
+            transition="all 0.4s ease-in-out"
             _hover={{
                 shadow: 'lg',
                 transform: 'translateY(-2px)'
