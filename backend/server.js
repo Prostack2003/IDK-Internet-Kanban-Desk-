@@ -22,6 +22,15 @@ db.serialize(() => {
     password TEXT NOT NULL
     )`);
 
+    db.run(`CREATE TABLE IF NOT EXISTS boards (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    description TEXT,
+    user_id INTEGER,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users (id)
+    )`);
+
     db.run(`CREATE TABLE IF NOT EXISTS tasks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
@@ -31,7 +40,8 @@ db.serialize(() => {
     end_date DATETIME,      
     user_id INTEGER,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (board_id) REFERENCES boards (id)
     )`);
 
     db.get("SELECT id FROM users WHERE email = 'admin@kanban.ru'", (err, row) => {
@@ -141,6 +151,60 @@ app.get('/api/tasks', authenticateToken, (req, res) => {
     });
 });
 
+app.get('/api/boards', authenticateToken, (req, res) => {
+    db.all('SELECT * FROM boards WHERE user_id = ?', [req.user.userId], (err, boards) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        res.json(boards);
+    });
+});
+
+app.get('/api/boards/:boardId/tasks', authenticateToken, (req, res) => {
+    const boardId = req.params.boardId;
+
+    db.all(
+        'SELECT * FROM tasks WHERE board_id = ? AND user_id = ?',
+        [boardId, req.user.userId],
+        (err, tasks) => {
+            if (err) return res.status(500).json({ error: 'Database error' });
+            res.json(tasks);
+        }
+    );
+});
+
+app.post('/api/boards', authenticateToken, (req, res) => {
+    const { name, description } = req.body;
+
+    db.run(
+        'INSERT INTO boards (name, description, user_id) VALUES (?, ?, ?)',
+        [name, description, req.user.userId],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'Database error' });
+
+            db.get('SELECT * FROM boards WHERE id = ?', [this.lastID], (err, board) => {
+                if (err) return res.status(500).json({ error: 'Database error' });
+                res.json(board);
+            });
+        }
+    );
+});
+
+app.post('/api/boards/:boardId/tasks', authenticateToken, (req, res) => {
+    const { title, description, status } = req.body;
+    const boardId = req.params.boardId;
+
+    db.run(
+        'INSERT INTO tasks (title, description, status, board_id, user_id) VALUES (?, ?, ?, ?, ?)',
+        [title, description, status, boardId, req.user.userId],
+        function(err) {
+            if (err) return res.status(500).json({ error: 'Database error' });
+
+            db.get('SELECT * FROM tasks WHERE id = ?', [this.lastID], (err, task) => {
+                if (err) return res.status(500).json({ error: 'Database error' });
+                res.json(task);
+            });
+        }
+    );
+});
 
 app.post('/api/tasks', authenticateToken, (req, res) => {
     const { title, description, status, startDate, endDate } = req.body;
