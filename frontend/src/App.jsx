@@ -54,7 +54,7 @@ function App() {
                                 py={4}
                             >
                                 <Heading size="lg" color="blue.600">
-                                    🎯 IKD (Internet Kanban Board)
+                                    🎯  IKD (Internet Kanban Desk)
                                 </Heading>
 
                                 <Flex align="center" gap={4}>

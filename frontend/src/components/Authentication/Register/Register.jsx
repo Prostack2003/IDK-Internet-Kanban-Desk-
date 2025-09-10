@@ -96,7 +96,7 @@ const Register = () => {
                     <CardBody>
                         <VStack spacing={6}>
                             <Heading size="lg" textAlign="center" color="blue.600" bgGradient="linear(to-r, blue.400, purple.500)" bgClip="text">
-                                🚀 Создать аккаунт
+                                Создать аккаунт
                             </Heading>
 
                             <Alert status="info" borderRadius="md" variant="left-accent">

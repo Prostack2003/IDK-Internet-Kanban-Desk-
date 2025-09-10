@@ -59,9 +59,9 @@ db.serialize(() => {
 
 
                             const sampleTasks = [
-                                ['Добро пожаловать в Kanban!', 'Это ваша первая задача', 'todo'],
-                                ['Изучить React', 'Освоить основы React', 'inprogress'],
-                                ['Завершить проект', 'Сдать учебный проект', 'todo']
+                                ['Добро пожаловать в IDK!', 'Здесь пишут описание задачи', 'todo'],
+                                ['Вы можете создать задачу!', 'Нажмите кнопочку создать', 'inprogress'],
+                                ['Или удалить задачу!', 'Нажмите на задачу', 'done']
                             ];
 
                             sampleTasks.forEach(([title, description, status]) => {
@@ -150,13 +150,10 @@ app.post('/api/tasks', authenticateToken, (req, res) => {
         [title, description, status, startDate, endDate, req.user.userId],
         function(err) {
             if (err) return res.status(500).json({ error: 'Database error' });
-            res.json({
-                id: this.lastID,
-                title,
-                description,
-                status,
-                start_date: startDate,
-                end_date: endDate
+
+            db.get('SELECT * FROM tasks WHERE id = ?', [this.lastID], (err, task) => {
+                if (err) return res.status(500).json({ error: 'Database error' });
+                res.json(task);
             });
         }
     );
