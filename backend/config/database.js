@@ -74,18 +74,29 @@ const createAdminUser = () => {
 };
 
 const createSampleTasks = (userId) => {
-    const sampleTasks = [
-        ['Добро пожаловать в IDK!', 'Здесь пишут описание задачи', 'todo'],
-        ['Вы можете создать задачу!', 'Нажмите кнопочку создать', 'inprogress'],
-        ['Или удалить задачу!', 'Нажмите на задачу', 'done']
-    ];
+    db.run(
+        'INSERT INTO boards (name, description, user_id) VALUES (?, ?, ?)',
+        ['Разработка', 'Описание доски', userId],
+        function(err) {
+            if (err) {
+                console.error('Error creating demo board:', err);
+                return;
+            }
 
-    sampleTasks.forEach(([title, description, status]) => {
-        db.run(
-            'INSERT INTO tasks (title, description, status, user_id) VALUES (?, ?, ?, ?, ?)',
-            [title, description, status, userId, null]
-        );
-    });
+            const boardId = this.lastID;
+            const sampleTasks = [
+                ['Добро пожаловать в IDK!', 'Здесь пишут описание задачи', 'todo', boardId],
+                ['Вы можете создать задачу!', 'Нажмите кнопочку создать', 'inprogress', boardId],
+                ['Или удалить задачу!', 'Нажмите на задачу', 'done', boardId]
+            ];
+
+            sampleTasks.forEach(([title, description, status, boardId]) => {
+                db.run(
+                    'INSERT INTO tasks (title, description, status, user_id, board_id) VALUES (?, ?, ?, ?, ?)',
+                    [title, description, status, userId, boardId]
+                );
+            });
+        });
 };
 
 module.exports = { db, initDatabase };
