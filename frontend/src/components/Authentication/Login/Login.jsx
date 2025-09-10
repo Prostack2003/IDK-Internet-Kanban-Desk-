@@ -35,7 +35,7 @@ const Login = ({ setUser }) => {
         setLoading(true);
 
         try {
-            const response = await axios.post('/api/login', formData);
+            const response = await axios.post('/api/auth/login', formData);
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('userEmail', formData.email);
             axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
