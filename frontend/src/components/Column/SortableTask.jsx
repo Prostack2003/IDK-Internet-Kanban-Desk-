@@ -42,12 +42,6 @@ const SortableTask = ({ task, onEdit, onClick }) => {
         }
     };
 
-
-    const shouldTruncate = task.description && task.description.length > 120;
-    const truncatedDescription = shouldTruncate
-        ? task.description.slice(0, 40) + '...'
-        : task.description;
-
     return (
         <Card
             ref={setNodeRef}
@@ -82,22 +76,18 @@ const SortableTask = ({ task, onEdit, onClick }) => {
                         >
                             {task.title}
                         </Heading>
-
-                        {}
-                        {truncatedDescription && (
+                        {task.description && (
                             <Text
                                 fontSize="xs"
                                 color="gray.600"
-                                noOfLines={3}
                                 wordBreak="break-word"
-                                overflowWrap="break-word"
+                                whiteSpace="pre-line"
+                                noOfLines={1}
                                 mb={1}
                             >
-                                {truncatedDescription}
+                                {task.description}
                             </Text>
                         )}
-
-                        {}
                         <Text fontSize="xs" color="gray.400">
                             {new Date(task.created_at).toLocaleDateString('ru-RU')}
                         </Text>
