@@ -8,11 +8,11 @@ import {
     Box,
     IconButton
 } from '@chakra-ui/react';
-import { EditIcon } from '@chakra-ui/icons';
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import {EditIcon} from '@chakra-ui/icons';
+import {useSortable} from '@dnd-kit/sortable';
+import {CSS} from '@dnd-kit/utilities';
 
-const SortableTask = ({ task, onEdit, onClick }) => {
+const SortableTask = ({task, onEdit, onClick}) => {
     const {
         attributes,
         listeners,
@@ -20,7 +20,7 @@ const SortableTask = ({ task, onEdit, onClick }) => {
         transform,
         transition,
         isDragging
-    } = useSortable({ id: task.id });
+    } = useSortable({id: task.id});
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -51,14 +51,10 @@ const SortableTask = ({ task, onEdit, onClick }) => {
             mb={3}
             {...attributes}
             {...listeners}
-            cursor="pointer"
-            transition="all 0.4s ease-in-out"
+            cursor={isDragging ? 'grabbing' : 'grab'}
+            transition={isDragging ? 'none' : 'box-shadow 0.2s ease-out'}
             _hover={{
-                shadow: 'lg',
-                transform: 'translateY(-2px)'
-            }}
-            _active={{
-                transform: 'translateY(0px)'
+                shadow: isDragging ? 'sm' : 'md'
             }}
             onClick={handleClick}
             minH="100px"
@@ -95,7 +91,7 @@ const SortableTask = ({ task, onEdit, onClick }) => {
 
                     {}
                     <IconButton
-                        icon={<EditIcon />}
+                        icon={<EditIcon/>}
                         size="sm"
                         variant="ghost"
                         colorScheme="blue"

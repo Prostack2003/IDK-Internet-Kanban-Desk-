@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardBody, Heading, VStack, Text } from '@chakra-ui/react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import SortableTask from './SortableTask';
+import SortableTask from './SortableTask.jsx';
 
 const DroppableColumn = ({ id, title, tasks, onEdit, onClick }) => {
     const { setNodeRef } = useDroppable({ id });
