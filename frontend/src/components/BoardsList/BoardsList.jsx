@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Box,
     Grid,
@@ -21,18 +21,20 @@ import {
     FormControl,
     FormLabel,
     Input,
-    Textarea
+    Textarea, AlertDialog, AlertDialogOverlay, AlertDialogContent, AlertDialogHeader, AlertDialogBody, AlertDialogFooter
 } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
+import {AddIcon, DeleteIcon} from '@chakra-ui/icons';
 import axios from 'axios';
-import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom';
+import {toast} from 'sonner';
+import {useNavigate} from 'react-router-dom';
 
 const BoardsList = () => {
     const [boards, setBoards] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [newBoard, setNewBoard] = useState({ name: '', description: '' });
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const [newBoard, setNewBoard] = useState({name: '', description: ''});
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [selectedBoard, setSelectedBoard] = useState(null);
+    const {isOpen, onOpen, onClose} = useDisclosure();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -60,7 +62,7 @@ const BoardsList = () => {
         try {
             const response = await axios.post('/api/boards', newBoard);
             setBoards([...boards, response.data]);
-            setNewBoard({ name: '', description: '' });
+            setNewBoard({name: '', description: ''});
             onClose();
             toast.success('Доска создана!');
         } catch (error) {
@@ -68,11 +70,22 @@ const BoardsList = () => {
         }
     };
 
+    const deleteBoard = async () => {
+        try {
+            await axios.delete(`/api/boards/${selectedBoard.id}`);
+            setBoards(boards.filter(board => board.id !== selectedBoard.id));
+            setDeleteDialogOpen(false);
+            toast.success('Доска удалена!');
+        } catch (error) {
+            toast.error('Ошибка удаления доски');
+        }
+    };
+
     if (loading) {
         return (
             <Container maxW="container.xl" py={8}>
                 <Box display="flex" justifyContent="center" alignItems="center" minH="50vh">
-                    <Spinner size="xl" />
+                    <Spinner size="xl"/>
                 </Box>
             </Container>
         );
@@ -81,7 +94,7 @@ const BoardsList = () => {
     return (
         <Container maxW="container.xl" py={8}>
             <VStack spacing={6} align="stretch">
-                <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={6}>
+                <Grid templateColumns={{base: "1fr", md: "repeat(3, 1fr)"}} gap={6}>
                     {boards.map((board) => (
                         <Card
                             key={board.id}
@@ -89,7 +102,7 @@ const BoardsList = () => {
                             borderWidth={2}
                             borderColor="blue.200"
                             cursor="pointer"
-                            _hover={{ shadow: 'lg', transform: 'translateY(-2px)' }}
+                            _hover={{shadow: 'lg', transform: 'translateY(-2px)'}}
                             transition="all 0.2s"
                             onClick={() => navigate(`/board/${board.id}`)}
                         >
@@ -103,16 +116,20 @@ const BoardsList = () => {
                         </Card>
                     ))}
                 </Grid>
-                <Box textAlign="center">
-                    <Button onClick={onOpen} colorScheme="blue" leftIcon={<AddIcon />} size="lg">
+                <Box display="flex" justifyContent="center" gridGap="10" textAlign="center">
+                    <Button onClick={onOpen} colorScheme="blue" leftIcon={<AddIcon/>} size="lg">
                         Создать доску
+                    </Button>
+                    <Button onClick={() => setDeleteDialogOpen(true)} colorScheme="red" leftIcon={<DeleteIcon/>}
+                            size="lg">
+                        Удалить доску
                     </Button>
                 </Box>
                 <Modal isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
+                    <ModalOverlay/>
                     <ModalContent>
                         <ModalHeader>Создать новую доску</ModalHeader>
-                        <ModalCloseButton />
+                        <ModalCloseButton/>
                         <form onSubmit={createBoard}>
                             <ModalBody>
                                 <VStack spacing={4}>
@@ -145,6 +162,48 @@ const BoardsList = () => {
                         </form>
                     </ModalContent>
                 </Modal>
+                <AlertDialog isOpen={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+                    <AlertDialogOverlay>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>Удалить доску</AlertDialogHeader>
+                            <AlertDialogBody>
+                                <Text fontWeight="bold" mb={4}>Выберите доску для удаления:</Text>
+                                <VStack spacing={2} align="stretch" maxH="300px" overflowY="auto">
+                                    {boards.map(board => (
+                                        <Button
+                                            key={board.id}
+                                            colorScheme={selectedBoard?.id === board.id ? "red" : "gray"}
+                                            variant={selectedBoard?.id === board.id ? "solid" : "outline"}
+                                            onClick={() => setSelectedBoard(board)}
+                                            justifyContent="flex-start"
+                                            textAlign="left"
+                                            py={4}
+                                        >
+                                            <Box flex="1">
+                                                <Text fontWeight="bold">{board.name}</Text>
+                                            </Box>
+                                            {selectedBoard?.id === board.id && (
+                                                <DeleteIcon ml={2} />
+                                            )}
+                                        </Button>
+                                    ))}
+                                </VStack>
+                            </AlertDialogBody>
+                            <AlertDialogFooter>
+                                <Button onClick={() => setDeleteDialogOpen(false)}>Отмена</Button>
+                                <Button
+                                    colorScheme="red"
+                                    onClick={deleteBoard}
+                                    ml={3}
+                                    disabled={!selectedBoard}
+                                    leftIcon={<DeleteIcon />}
+                                >
+                                    Удалить выбранную доску
+                                </Button>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialogOverlay>
+                </AlertDialog>
             </VStack>
         </Container>
     );
