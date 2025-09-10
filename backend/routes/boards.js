@@ -60,4 +60,22 @@ router.post('/:boardId/tasks', authenticateToken, (req, res) => {
     );
 });
 
+router.delete('/:id', authenticateToken, (req, res) => {
+    const boardId = req.params.id;
+
+    db.get('SELECT * FROM boards WHERE id = ? AND user_id = ?', [boardId, req.user.userId], (err, board) => {
+        if (err) return res.status(500).json({ error: 'Database error' });
+        if (!board) return res.status(404).json({ error: 'Доска не найдена' });
+
+        db.run('DELETE FROM tasks WHERE board_id = ?', [boardId], function(err) {
+            if (err) return res.status(500).json({ error: 'Database error' });
+
+            db.run('DELETE FROM boards WHERE id = ?', [boardId], function(err) {
+                if (err) return res.status(500).json({ error: 'Database error' });
+                res.json({ message: 'Доска и связанные задачи удалены' });
+            });
+        });
+    });
+});
+
 module.exports = router;
