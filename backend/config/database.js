@@ -26,8 +26,6 @@ const initDatabase = () => {
           title TEXT NOT NULL,
           description TEXT,
           status TEXT DEFAULT 'todo',
-          start_date DATETIME,
-          end_date DATETIME,
           user_id INTEGER,
           board_id INTEGER,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
