@@ -11,9 +11,12 @@ router.get('/', authenticateToken, (req, res) => {
     });
 });
 
-
 router.post('/', authenticateToken, (req, res) => {
     const { name, description } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: 'Board name is required' });
+    }
 
     db.run(
         'INSERT INTO boards (name, description, user_id) VALUES (?, ?, ?)',
@@ -29,6 +32,7 @@ router.post('/', authenticateToken, (req, res) => {
     );
 });
 
+// ... остальные роуты без изменений
 router.get('/:boardId/tasks', authenticateToken, (req, res) => {
     const boardId = req.params.boardId;
 

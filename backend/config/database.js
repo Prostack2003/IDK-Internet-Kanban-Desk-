@@ -1,14 +1,18 @@
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcryptjs');
 
 const db = new sqlite3.Database('./kanban.db');
 
 const initDatabase = () => {
     db.serialize(() => {
+        // Включаем foreign keys
+        db.run('PRAGMA foreign_keys = ON');
 
         db.run(`CREATE TABLE IF NOT EXISTS users (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           email TEXT UNIQUE NOT NULL,
-          password TEXT NOT NULL
+          password TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )`);
 
         db.run(`CREATE TABLE IF NOT EXISTS boards (
@@ -17,9 +21,8 @@ const initDatabase = () => {
           description TEXT,
           user_id INTEGER,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (user_id) REFERENCES users (id)
+          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
         )`);
-
 
         db.run(`CREATE TABLE IF NOT EXISTS tasks (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -29,9 +32,9 @@ const initDatabase = () => {
           user_id INTEGER,
           board_id INTEGER,
           created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          FOREIGN KEY (user_id) REFERENCES users (id),
-          FOREIGN KEY (board_id) REFERENCES boards (id)
-         )`);
+          FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+          FOREIGN KEY (board_id) REFERENCES boards (id) ON DELETE CASCADE
+        )`);
 
         createAdminUser();
     });
@@ -45,7 +48,6 @@ const createAdminUser = () => {
         }
 
         if (!row) {
-            const bcrypt = require('bcryptjs');
             const adminPassword = 'admin123';
 
             bcrypt.hash(adminPassword, 10, (err, hashedPassword) => {
@@ -61,12 +63,15 @@ const createAdminUser = () => {
                         if (err) {
                             console.error('Error creating admin user:', err);
                         } else {
+                            const userId = this.lastID;
                             console.log('Admin user created: admin@kanban.ru / admin123');
-                            createSampleTasks(this.lastID);
+                            createSampleTasks(userId);
                         }
                     }
                 );
             });
+        } else {
+            console.log('Admin user already exists');
         }
     });
 };
@@ -74,7 +79,7 @@ const createAdminUser = () => {
 const createSampleTasks = (userId) => {
     db.run(
         'INSERT INTO boards (name, description, user_id) VALUES (?, ?, ?)',
-        ['Разработка', 'Описание доски', userId],
+        ['Разработка', 'Демо доска для примера работы с IKD', userId],
         function(err) {
             if (err) {
                 console.error('Error creating demo board:', err);
@@ -82,19 +87,52 @@ const createSampleTasks = (userId) => {
             }
 
             const boardId = this.lastID;
+            console.log(`Demo board created with ID: ${boardId}`);
+
             const sampleTasks = [
-                ['Добро пожаловать в IDK!', 'Здесь пишут описание задачи', 'todo', boardId],
-                ['Вы можете создать задачу!', 'Нажмите кнопочку создать', 'inprogress', boardId],
-                ['Или удалить задачу!', 'Нажмите на задачу', 'done', boardId]
+                {
+                    title: 'Добро пожаловать в IKD!',
+                    description: 'Здесь пишут описание задачи',
+                    status: 'todo',
+                    userId: userId,
+                    boardId: boardId
+                },
+                {
+                    title: 'Вы можете создать задачу!',
+                    description: 'Нажмите кнопку "Создать задачу"',
+                    status: 'inprogress',
+                    userId: userId,
+                    boardId: boardId
+                },
+                {
+                    title: 'Или удалить задачу!',
+                    description: 'Нажмите на задачу для удаления',
+                    status: 'done',
+                    userId: userId,
+                    boardId: boardId
+                }
             ];
 
-            sampleTasks.forEach(([title, description, status, boardId]) => {
+            sampleTasks.forEach((task) => {
                 db.run(
                     'INSERT INTO tasks (title, description, status, user_id, board_id) VALUES (?, ?, ?, ?, ?)',
-                    [title, description, status, userId, boardId]
+                    [task.title, task.description, task.status, task.userId, task.boardId],
+                    function(err) {
+                        if (err) {
+                            console.error('Error creating sample task:', err);
+                        }
+                    }
                 );
             });
-        });
+
+            console.log('Sample tasks created successfully');
+        }
+    );
 };
+
+// Обработка ошибок базы данных
+db.on('error', (err) => {
+    console.error('Database error:', err);
+});
 
 module.exports = { db, initDatabase };

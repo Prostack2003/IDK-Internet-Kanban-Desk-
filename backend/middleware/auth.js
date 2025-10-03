@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = 'your-secret-key-for-ikd-app';
 
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
