@@ -27,7 +27,7 @@ const AddTaskModal = ({ isOpen, onClose, newTask, setNewTask, loading, onAddTask
             <ModalOverlay />
             <ModalContent>
                 <ModalHeader>
-                    ➕ Добавить новую задачу
+                    Добавить новую задачу
                 </ModalHeader>
                 <ModalCloseButton />
 

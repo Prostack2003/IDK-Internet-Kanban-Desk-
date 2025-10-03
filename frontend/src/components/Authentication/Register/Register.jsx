@@ -98,25 +98,14 @@ const Register = () => {
                             <Heading size="lg" textAlign="center" color="blue.600" bgGradient="linear(to-r, blue.400, purple.500)" bgClip="text">
                                 Создать аккаунт
                             </Heading>
-
-                            <Alert status="info" borderRadius="md" variant="left-accent">
-                                <AlertIcon />
-                                <Box>
-                                    <AlertTitle>Уже есть аккаунт?</AlertTitle>
-                                    <AlertDescription fontSize="sm">
-                                        Используйте демо доступ: admin@kanban.ru / admin123
-                                    </AlertDescription>
-                                </Box>
-                            </Alert>
-
                             <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                                 <VStack spacing={4}>
                                     <FormControl isInvalid={errors.email}>
-                                        <FormLabel>Email</FormLabel>
+                                        <FormLabel>Почта</FormLabel>
                                         <InputGroup>
                                             <Input
                                                 type="email"
-                                                placeholder="Введите ваш email"
+                                                placeholder="Введите почту"
                                                 value={formData.email}
                                                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                                                 leftElement={<EmailIcon color="gray.300" ml={3} />}
@@ -131,7 +120,7 @@ const Register = () => {
                                         <InputGroup>
                                             <Input
                                                 type={showPassword ? 'text' : 'password'}
-                                                placeholder="Не менее 6 символов"
+                                                placeholder="Пароль не менее 6 символов"
                                                 value={formData.password}
                                                 onChange={(e) => setFormData({...formData, password: e.target.value})}
                                                 leftElement={<LockIcon color="gray.300" ml={3} />}

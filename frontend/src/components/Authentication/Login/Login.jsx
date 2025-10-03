@@ -43,7 +43,7 @@ const Login = ({ setUser }) => {
 
             toast.success('Добро пожаловать!');
         } catch (error) {
-            toast.error('Ошибка входа. Используйте admin@kanban.ru / admin123');
+            toast.error('Ошибка входа. Проверьте логин или пароль');
         } finally {
             setLoading(false);
         }
@@ -63,8 +63,8 @@ const Login = ({ setUser }) => {
                             <Box>
                                 <AlertTitle>Демо доступ:</AlertTitle>
                                 <AlertDescription fontSize="sm">
-                                    Email: admin@kanban.ru<br />
-                                    Password: admin123
+                                    Почта: admin@kanban.ru<br />
+                                    Пароль: admin123
                                 </AlertDescription>
                             </Box>
                         </Alert>
@@ -72,11 +72,11 @@ const Login = ({ setUser }) => {
                         <form onSubmit={handleSubmit} style={{ width: '100%' }}>
                             <VStack spacing={4}>
                                 <FormControl isRequired>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>Почта</FormLabel>
                                     <InputGroup>
                                         <Input
                                             type="email"
-                                            placeholder="Введите ваш email"
+                                            placeholder="Введите почту"
                                             value={formData.email}
                                             onChange={(e) => setFormData({...formData, email: e.target.value})}
                                             leftElement={<EmailIcon color="gray.300" ml={3} />}
@@ -90,7 +90,7 @@ const Login = ({ setUser }) => {
                                     <InputGroup>
                                         <Input
                                             type={showPassword ? 'text' : 'password'}
-                                            placeholder="Введите ваш пароль"
+                                            placeholder="Введите пароль"
                                             value={formData.password}
                                             onChange={(e) => setFormData({...formData, password: e.target.value})}
                                             leftElement={<LockIcon color="gray.300" ml={3} />}
